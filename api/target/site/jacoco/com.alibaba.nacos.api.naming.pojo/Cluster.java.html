@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Cluster.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-api 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.api.naming.pojo</a> &gt; <span class="el_source">Cluster.java</span></div><h1>Cluster.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.api.naming.pojo;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author &lt;a href=&quot;mailto:zpf.073@gmail.com&quot;&gt;nkorange&lt;/a&gt;
+ */
+public class Cluster {
+
+    /**
+     * Name of belonging service
+     */
+    private String serviceName;
+
+    /**
+     * Name of cluster
+     */
+    private String name;
+
+    /**
+     * Health check config of this cluster
+     */
+<span class="nc" id="L39">    private AbstractHealthChecker healthChecker = new AbstractHealthChecker.Tcp();</span>
+
+    /**
+     * Default registered port for instances in this cluster.
+     */
+<span class="nc" id="L44">    private int defaultPort = 80;</span>
+
+    /**
+     * Default health check port of instances in this cluster.
+     */
+<span class="nc" id="L49">    private int defaultCheckPort = 80;</span>
+
+    /**
+     * Whether or not use instance port to do health check.
+     */
+<span class="nc" id="L54">    private boolean useIPPort4Check = true;</span>
+
+<span class="nc" id="L56">    private Map&lt;String, String&gt; metadata = new HashMap&lt;String, String&gt;();</span>
+
+<span class="nc" id="L58">    public Cluster() {</span>
+
+<span class="nc" id="L60">    }</span>
+
+<span class="nc" id="L62">    public Cluster(String clusterName) {</span>
+<span class="nc" id="L63">        this.name = clusterName;</span>
+<span class="nc" id="L64">    }</span>
+
+    public String getServiceName() {
+<span class="nc" id="L67">        return serviceName;</span>
+    }
+
+    public void setServiceName(String serviceName) {
+<span class="nc" id="L71">        this.serviceName = serviceName;</span>
+<span class="nc" id="L72">    }</span>
+
+    public String getName() {
+<span class="nc" id="L75">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L79">        this.name = name;</span>
+<span class="nc" id="L80">    }</span>
+
+    public AbstractHealthChecker getHealthChecker() {
+<span class="nc" id="L83">        return healthChecker;</span>
+    }
+
+    public void setHealthChecker(AbstractHealthChecker healthChecker) {
+<span class="nc" id="L87">        this.healthChecker = healthChecker;</span>
+<span class="nc" id="L88">    }</span>
+
+    public int getDefaultPort() {
+<span class="nc" id="L91">        return defaultPort;</span>
+    }
+
+    public void setDefaultPort(int defaultPort) {
+<span class="nc" id="L95">        this.defaultPort = defaultPort;</span>
+<span class="nc" id="L96">    }</span>
+
+    public int getDefaultCheckPort() {
+<span class="nc" id="L99">        return defaultCheckPort;</span>
+    }
+
+    public void setDefaultCheckPort(int defaultCheckPort) {
+<span class="nc" id="L103">        this.defaultCheckPort = defaultCheckPort;</span>
+<span class="nc" id="L104">    }</span>
+
+    public boolean isUseIPPort4Check() {
+<span class="nc" id="L107">        return useIPPort4Check;</span>
+    }
+
+    public void setUseIPPort4Check(boolean useIPPort4Check) {
+<span class="nc" id="L111">        this.useIPPort4Check = useIPPort4Check;</span>
+<span class="nc" id="L112">    }</span>
+
+    public Map&lt;String, String&gt; getMetadata() {
+<span class="nc" id="L115">        return metadata;</span>
+    }
+
+    public void setMetadata(Map&lt;String, String&gt; metadata) {
+<span class="nc" id="L119">        this.metadata = metadata;</span>
+<span class="nc" id="L120">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

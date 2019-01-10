@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ServiceInfo.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-api 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.api.naming.pojo</a> &gt; <span class="el_source">ServiceInfo.java</span></div><h1>ServiceInfo.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.api.naming.pojo;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+/**
+ * @author &lt;a href=&quot;mailto:zpf.073@gmail.com&quot;&gt;nkorange&lt;/a&gt;
+ */
+public class ServiceInfo {
+
+<span class="nc" id="L31">    @JSONField(serialize = false)</span>
+    private String jsonFromServer = EMPTY;
+    public static final String SPLITER = &quot;@@&quot;;
+
+    @JSONField(name = &quot;dom&quot;)
+    private String name;
+
+    private String clusters;
+
+<span class="nc" id="L40">    private long cacheMillis = 1000L;</span>
+
+<span class="nc" id="L42">    @JSONField(name = &quot;hosts&quot;)</span>
+    private List&lt;Instance&gt; hosts = new ArrayList&lt;Instance&gt;();
+
+<span class="nc" id="L45">    private long lastRefTime = 0L;</span>
+
+<span class="nc" id="L47">    private String checksum = &quot;&quot;;</span>
+
+<span class="nc" id="L49">    private String env = &quot;&quot;;</span>
+
+<span class="nc" id="L51">    private volatile boolean allIPs = false;</span>
+
+<span class="nc" id="L53">    public ServiceInfo() {</span>
+<span class="nc" id="L54">    }</span>
+
+    public boolean isAllIPs() {
+<span class="nc" id="L57">        return allIPs;</span>
+    }
+
+    public void setAllIPs(boolean allIPs) {
+<span class="nc" id="L61">        this.allIPs = allIPs;</span>
+<span class="nc" id="L62">    }</span>
+
+<span class="nc" id="L64">    public ServiceInfo(String key) {</span>
+
+<span class="nc" id="L66">        int maxKeySectionCount = 4;</span>
+<span class="nc" id="L67">        int allIpFlagIndex = 3;</span>
+<span class="nc" id="L68">        int envIndex = 2;</span>
+<span class="nc" id="L69">        int clusterIndex = 1;</span>
+<span class="nc" id="L70">        int serviceNameIndex = 0;</span>
+
+<span class="nc" id="L72">        String[] keys = key.split(SPLITER);</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">        if (keys.length &gt;= maxKeySectionCount) {</span>
+<span class="nc" id="L74">            this.name = keys[serviceNameIndex];</span>
+<span class="nc" id="L75">            this.clusters = keys[clusterIndex];</span>
+<span class="nc" id="L76">            this.env = keys[envIndex];</span>
+<span class="nc bnc" id="L77" title="All 2 branches missed.">            if (strEquals(keys[allIpFlagIndex], ALL_IPS)) {</span>
+<span class="nc" id="L78">                this.setAllIPs(true);</span>
+            }
+<span class="nc bnc" id="L80" title="All 2 branches missed.">        } else if (keys.length &gt;= allIpFlagIndex) {</span>
+<span class="nc" id="L81">            this.name = keys[serviceNameIndex];</span>
+<span class="nc" id="L82">            this.clusters = keys[clusterIndex];</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            if (strEquals(keys[envIndex], ALL_IPS)) {</span>
+<span class="nc" id="L84">                this.setAllIPs(true);</span>
+            } else {
+<span class="nc" id="L86">                this.env = keys[envIndex];</span>
+            }
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        } else if (keys.length &gt;= envIndex) {</span>
+<span class="nc" id="L89">            this.name = keys[serviceNameIndex];</span>
+<span class="nc bnc" id="L90" title="All 2 branches missed.">            if (strEquals(keys[clusterIndex], ALL_IPS)) {</span>
+<span class="nc" id="L91">                this.setAllIPs(true);</span>
+            } else {
+<span class="nc" id="L93">                this.clusters = keys[clusterIndex];</span>
+            }
+        }
+
+<span class="nc" id="L97">        this.name = keys[0];</span>
+<span class="nc" id="L98">    }</span>
+
+    public ServiceInfo(String name, String clusters) {
+<span class="nc" id="L101">        this(name, clusters, EMPTY);</span>
+<span class="nc" id="L102">    }</span>
+
+<span class="nc" id="L104">    public ServiceInfo(String name, String clusters, String env) {</span>
+<span class="nc" id="L105">        this.name = name;</span>
+<span class="nc" id="L106">        this.clusters = clusters;</span>
+<span class="nc" id="L107">        this.env = env;</span>
+<span class="nc" id="L108">    }</span>
+
+    public int ipCount() {
+<span class="nc" id="L111">        return hosts.size();</span>
+    }
+
+    public boolean expired() {
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        return System.currentTimeMillis() - lastRefTime &gt; cacheMillis;</span>
+    }
+
+    public void setHosts(List&lt;Instance&gt; hosts) {
+<span class="nc" id="L119">        this.hosts = hosts;</span>
+<span class="nc" id="L120">    }</span>
+
+    public boolean isValid() {
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        return hosts != null;</span>
+    }
+
+    public String getName() {
+<span class="nc" id="L127">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L131">        this.name = name;</span>
+<span class="nc" id="L132">    }</span>
+
+    public void setLastRefTime(long lastRefTime) {
+<span class="nc" id="L135">        this.lastRefTime = lastRefTime;</span>
+<span class="nc" id="L136">    }</span>
+
+    public long getLastRefTime() {
+<span class="nc" id="L139">        return lastRefTime;</span>
+    }
+
+    public String getClusters() {
+<span class="nc" id="L143">        return clusters;</span>
+    }
+
+    public void setClusters(String clusters) {
+<span class="nc" id="L147">        this.clusters = clusters;</span>
+<span class="nc" id="L148">    }</span>
+
+    public long getCacheMillis() {
+<span class="nc" id="L151">        return cacheMillis;</span>
+    }
+
+    public void setCacheMillis(long cacheMillis) {
+<span class="nc" id="L155">        this.cacheMillis = cacheMillis;</span>
+<span class="nc" id="L156">    }</span>
+
+    public List&lt;Instance&gt; getHosts() {
+
+<span class="nc" id="L160">        return new ArrayList&lt;Instance&gt;(hosts);</span>
+    }
+
+    public boolean validate() {
+<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (isAllIPs()) {</span>
+<span class="nc" id="L165">            return true;</span>
+        }
+
+<span class="nc" id="L168">        List&lt;Instance&gt; validHosts = new ArrayList&lt;Instance&gt;();</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        for (Instance host : hosts) {</span>
+<span class="nc bnc" id="L170" title="All 2 branches missed.">            if (!host.isHealthy()) {</span>
+<span class="nc" id="L171">                continue;</span>
+            }
+
+<span class="nc bnc" id="L174" title="All 2 branches missed.">            for (int i = 0; i &lt; host.getWeight(); i++) {</span>
+<span class="nc" id="L175">                validHosts.add(host);</span>
+            }
+<span class="nc" id="L177">        }</span>
+
+<span class="nc" id="L179">        return true;</span>
+    }
+
+    @JSONField(serialize = false)
+    public String getJsonFromServer() {
+<span class="nc" id="L184">        return jsonFromServer;</span>
+    }
+
+    public void setJsonFromServer(String jsonFromServer) {
+<span class="nc" id="L188">        this.jsonFromServer = jsonFromServer;</span>
+<span class="nc" id="L189">    }</span>
+
+    @JSONField(serialize = false)
+    public String getKey() {
+<span class="nc" id="L193">        return getKey(name, clusters, env, isAllIPs());</span>
+    }
+
+    @JSONField(serialize = false)
+    public String getKeyEncoded() {
+        try {
+<span class="nc" id="L199">            return getKey(URLEncoder.encode(name, &quot;UTF-8&quot;), clusters, env, isAllIPs());</span>
+<span class="nc" id="L200">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L201">            return getKey();</span>
+        }
+    }
+
+    @JSONField(serialize = false)
+    public static String getKey(String name, String clusters, String unit) {
+<span class="nc" id="L207">        return getKey(name, clusters, unit, false);</span>
+    }
+
+    @JSONField(serialize = false)
+    public static String getKey(String name, String clusters, String unit, boolean isAllIPs) {
+
+<span class="nc bnc" id="L213" title="All 2 branches missed.">        if (isEmpty(unit)) {</span>
+<span class="nc" id="L214">            unit = EMPTY;</span>
+        }
+
+<span class="nc bnc" id="L217" title="All 4 branches missed.">        if (!isEmpty(clusters) &amp;&amp; !isEmpty(unit)) {</span>
+<span class="nc bnc" id="L218" title="All 2 branches missed.">            return isAllIPs ? name + SPLITER + clusters + SPLITER + unit + SPLITER + ALL_IPS</span>
+                : name + SPLITER + clusters + SPLITER + unit;
+        }
+
+<span class="nc bnc" id="L222" title="All 2 branches missed.">        if (!isEmpty(clusters)) {</span>
+<span class="nc bnc" id="L223" title="All 2 branches missed.">            return isAllIPs ? name + SPLITER + clusters + SPLITER + ALL_IPS : name + SPLITER + clusters;</span>
+        }
+
+<span class="nc bnc" id="L226" title="All 2 branches missed.">        if (!isEmpty(unit)) {</span>
+<span class="nc bnc" id="L227" title="All 2 branches missed.">            return isAllIPs ? name + SPLITER + EMPTY + SPLITER + unit + SPLITER + ALL_IPS :</span>
+                name + SPLITER + EMPTY + SPLITER + unit;
+        }
+
+<span class="nc bnc" id="L231" title="All 2 branches missed.">        return isAllIPs ? name + SPLITER + ALL_IPS : name;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L236">        return getKey();</span>
+    }
+
+    public String getChecksum() {
+<span class="nc" id="L240">        return checksum;</span>
+    }
+
+    public void setChecksum(String checksum) {
+<span class="nc" id="L244">        this.checksum = checksum;</span>
+<span class="nc" id="L245">    }</span>
+
+    private static boolean isEmpty(String str) {
+<span class="nc bnc" id="L248" title="All 4 branches missed.">        return str == null || str.length() == 0;</span>
+    }
+
+    private static boolean strEquals(String str1, String str2) {
+<span class="nc bnc" id="L252" title="All 4 branches missed.">        return str1 == null ? str2 == null : str1.equals(str2);</span>
+    }
+
+    private static boolean isEmpty(Collection coll) {
+<span class="nc bnc" id="L256" title="All 4 branches missed.">        return (coll == null || coll.isEmpty());</span>
+    }
+
+    private static final String EMPTY = &quot;&quot;;
+
+    private static final String ALL_IPS = &quot;000--00-ALL_IPS--00--000&quot;;
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

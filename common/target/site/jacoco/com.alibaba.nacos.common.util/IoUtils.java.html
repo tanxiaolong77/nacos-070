@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IoUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-common 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.common.util</a> &gt; <span class="el_source">IoUtils.java</span></div><h1>IoUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.common.util;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.zip.GZIPInputStream;
+
+/**
+ * IO related tool methods
+ *
+ * @author nacos
+ */
+<span class="nc" id="L31">public class IoUtils {</span>
+
+    public static byte[] tryDecompress(InputStream raw) throws Exception {
+
+        try {
+<span class="nc" id="L36">            GZIPInputStream gis</span>
+                = new GZIPInputStream(raw);
+<span class="nc" id="L38">            ByteArrayOutputStream out</span>
+                = new ByteArrayOutputStream();
+
+<span class="nc" id="L41">            IOUtils.copy(gis, out);</span>
+
+<span class="nc" id="L43">            return out.toByteArray();</span>
+<span class="nc" id="L44">        } catch (Exception e) {</span>
+<span class="nc" id="L45">            e.printStackTrace();</span>
+        }
+
+<span class="nc" id="L48">        return null;</span>
+    }
+
+    static private BufferedReader toBufferedReader(Reader reader) {
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">        return reader instanceof BufferedReader ? (BufferedReader)reader : new BufferedReader(</span>
+            reader);
+    }
+
+    public static void writeStringToFile(File file, String data, String encoding)
+        throws IOException {
+<span class="fc" id="L58">        OutputStream os = null;</span>
+        try {
+<span class="fc" id="L60">            os = new FileOutputStream(file);</span>
+<span class="fc" id="L61">            os.write(data.getBytes(encoding));</span>
+<span class="fc" id="L62">            os.flush();</span>
+        } finally {
+<span class="pc bpc" id="L64" title="3 of 4 branches missed.">            if (null != os) {</span>
+<span class="pc" id="L65">                os.close();</span>
+            }
+        }
+<span class="fc" id="L68">    }</span>
+
+    static public List&lt;String&gt; readLines(Reader input) throws IOException {
+<span class="fc" id="L71">        BufferedReader reader = toBufferedReader(input);</span>
+<span class="fc" id="L72">        List&lt;String&gt; list = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L73">        String line = null;</span>
+        for (; ; ) {
+<span class="fc" id="L75">            line = reader.readLine();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">            if (null != line) {</span>
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">                if (StringUtils.isNotEmpty(line)) {</span>
+<span class="fc" id="L78">                    list.add(line.trim());</span>
+                }
+            } else {
+                break;
+            }
+        }
+<span class="fc" id="L84">        return list;</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

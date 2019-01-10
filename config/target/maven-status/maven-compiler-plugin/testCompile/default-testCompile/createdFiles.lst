@@ -1,0 +1,11 @@
+com\alibaba\nacos\config\server\controller\HealthControllerUnitTest.class
+com\alibaba\nacos\config\server\utils\event\EventDispatcherTest.class
+com\alibaba\nacos\config\server\utils\event\MockListener.class
+com\alibaba\nacos\config\server\constant\ConstantsTest.class
+com\alibaba\nacos\config\server\service\ClientTrackServiceTest.class
+com\alibaba\nacos\config\server\service\DiskServiceUnitTest.class
+com\alibaba\nacos\config\server\utils\GroupKeyTest.class
+com\alibaba\nacos\config\server\service\AggrWhitelistTest.class
+com\alibaba\nacos\config\server\utils\event\MockEvent.class
+com\alibaba\nacos\config\server\utils\event\EventDispatcherTest$1.class
+com\alibaba\nacos\config\server\utils\SimpleReadWriteLockTest.class

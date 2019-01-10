@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NacosDefaultPropertySourceEnvironmentPostProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-core 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.core.env</a> &gt; <span class="el_source">NacosDefaultPropertySourceEnvironmentPostProcessor.java</span></div><h1>NacosDefaultPropertySourceEnvironmentPostProcessor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.core.env;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.Ordered;
+import org.springframework.core.env.*;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.EncodedResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePropertySource;
+
+import java.io.IOException;
+
+import static org.springframework.core.io.support.ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX;
+
+/**
+ * A lowest precedence {@link EnvironmentPostProcessor} implementation to append Nacos default {@link PropertySource}
+ * with lowest order in {@link Environment}
+ *
+ * @author &lt;a href=&quot;mailto:mercyblitz@gmail.com&quot;&gt;Mercy&lt;/a&gt;
+ * @since 0.2.2
+ */
+<span class="fc" id="L41">public class NacosDefaultPropertySourceEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {</span>
+
+    /**
+     * The name of Nacos default {@link PropertySource}
+     */
+    public static final String PROPERTY_SOURCE_NAME = &quot;nacos-default&quot;;
+
+    /**
+     * The resource location pattern of Nacos default {@link PropertySource}
+     *
+     * @see ResourcePatternResolver#CLASSPATH_ALL_URL_PREFIX
+     */
+    public static final String RESOURCE_LOCATION_PATTERN = CLASSPATH_ALL_URL_PREFIX
+        + &quot;META-INF/nacos-default.properties&quot;;
+
+    private static final String FILE_ENCODING = &quot;UTF-8&quot;;
+
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+
+<span class="fc" id="L61">        ResourceLoader resourceLoader = getResourceLoader(application);</span>
+
+<span class="fc" id="L63">        processPropertySource(environment, resourceLoader);</span>
+
+<span class="fc" id="L65">    }</span>
+
+    private ResourceLoader getResourceLoader(SpringApplication application) {
+
+<span class="fc" id="L69">        ResourceLoader resourceLoader = application.getResourceLoader();</span>
+
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (resourceLoader == null) {</span>
+<span class="fc" id="L72">            resourceLoader = new DefaultResourceLoader(application.getClassLoader());</span>
+        }
+
+<span class="fc" id="L75">        return resourceLoader;</span>
+    }
+
+    private void processPropertySource(ConfigurableEnvironment environment, ResourceLoader resourceLoader) {
+
+        try {
+<span class="fc" id="L81">            PropertySource nacosDefaultPropertySource = buildPropertySource(resourceLoader);</span>
+<span class="fc" id="L82">            MutablePropertySources propertySources = environment.getPropertySources();</span>
+            // append nacosDefaultPropertySource as last one in order to be overrided by higher order
+<span class="fc" id="L84">            propertySources.addLast(nacosDefaultPropertySource);</span>
+<span class="nc" id="L85">        } catch (IOException e) {</span>
+<span class="nc" id="L86">            throw new IllegalStateException(e.getMessage(), e);</span>
+<span class="fc" id="L87">        }</span>
+<span class="fc" id="L88">    }</span>
+
+    private PropertySource buildPropertySource(ResourceLoader resourceLoader) throws IOException {
+<span class="fc" id="L91">        CompositePropertySource propertySource = new CompositePropertySource(PROPERTY_SOURCE_NAME);</span>
+<span class="fc" id="L92">        appendPropertySource(propertySource, resourceLoader);</span>
+<span class="fc" id="L93">        return propertySource;</span>
+    }
+
+    private void appendPropertySource(CompositePropertySource propertySource, ResourceLoader resourceLoader)
+        throws IOException {
+<span class="fc" id="L98">        ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver(resourceLoader);</span>
+<span class="fc" id="L99">        Resource[] resources = resourcePatternResolver.getResources(RESOURCE_LOCATION_PATTERN);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">        for (Resource resource : resources) {</span>
+            // Add if exists
+<span class="pc bpc" id="L102" title="1 of 2 branches missed.">            if (resource.exists()) {</span>
+<span class="fc" id="L103">                String internalName = String.valueOf(resource.getURL());</span>
+<span class="fc" id="L104">                propertySource.addPropertySource(new ResourcePropertySource(internalName,</span>
+                    new EncodedResource(resource, FILE_ENCODING)));
+            }
+        }
+<span class="fc" id="L108">    }</span>
+
+    @Override
+    public int getOrder() {
+<span class="fc" id="L112">        return LOWEST_PRECEDENCE;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

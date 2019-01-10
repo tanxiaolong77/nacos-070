@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+nacos-core 0.7.0,com.alibaba.nacos.core.env,NacosDefaultPropertySourceEnvironmentPostProcessor,8,94,2,4,2,24,2,8,0,7
+nacos-core 0.7.0,com.alibaba.nacos.core.utils,WebUtils,116,0,14,0,22,0,11,0,4,0
+nacos-core 0.7.0,com.alibaba.nacos.core.listener,StartingSpringApplicationRunListener.new ThreadFactory() {...},0,17,0,0,0,4,0,2,0,2
+nacos-core 0.7.0,com.alibaba.nacos.core.listener,StartingSpringApplicationRunListener.new Runnable() {...},8,6,2,0,3,1,2,1,1,1
+nacos-core 0.7.0,com.alibaba.nacos.core.listener,StartingSpringApplicationRunListener,20,96,4,4,7,34,5,12,1,12
+nacos-core 0.7.0,com.alibaba.nacos.core.listener,StandaloneProfileApplicationListener,2,34,0,4,1,10,1,5,1,3
+nacos-core 0.7.0,com.alibaba.nacos.core.listener,LoggingSpringApplicationRunListener,6,32,1,3,2,15,2,10,1,9

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Md5Utils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-common 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.common.util</a> &gt; <span class="el_source">Md5Utils.java</span></div><h1>Md5Utils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.common.util;
+
+import java.io.UnsupportedEncodingException;
+
+/**
+ * MD5 generator
+ *
+ * @author nacos
+ */
+<span class="nc" id="L25">public class Md5Utils {</span>
+
+    private static final int HEX_VALUE_COUNT = 16;
+
+    public static String getMD5(byte[] bytes) {
+<span class="nc" id="L30">        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};</span>
+<span class="nc" id="L31">        char str[] = new char[16 * 2];</span>
+        try {
+<span class="nc" id="L33">            java.security.MessageDigest md = java.security.MessageDigest.getInstance(&quot;MD5&quot;);</span>
+<span class="nc" id="L34">            md.update(bytes);</span>
+<span class="nc" id="L35">            byte tmp[] = md.digest();</span>
+<span class="nc" id="L36">            int k = 0;</span>
+<span class="nc bnc" id="L37" title="All 2 branches missed.">            for (int i = 0; i &lt; HEX_VALUE_COUNT; i++) {</span>
+<span class="nc" id="L38">                byte byte0 = tmp[i];</span>
+<span class="nc" id="L39">                str[k++] = hexDigits[byte0 &gt;&gt;&gt; 4 &amp; 0xf];</span>
+<span class="nc" id="L40">                str[k++] = hexDigits[byte0 &amp; 0xf];</span>
+            }
+<span class="nc" id="L42">        } catch (Exception e) {</span>
+<span class="nc" id="L43">            e.printStackTrace();</span>
+<span class="nc" id="L44">        }</span>
+<span class="nc" id="L45">        return new String(str);</span>
+    }
+
+    public static String getMD5(String value, String encode) {
+<span class="nc" id="L49">        String result = &quot;&quot;;</span>
+        try {
+<span class="nc" id="L51">            result = getMD5(value.getBytes(encode));</span>
+<span class="nc" id="L52">        } catch (UnsupportedEncodingException e) {</span>
+<span class="nc" id="L53">            e.printStackTrace();</span>
+<span class="nc" id="L54">        }</span>
+
+<span class="nc" id="L56">        return result;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

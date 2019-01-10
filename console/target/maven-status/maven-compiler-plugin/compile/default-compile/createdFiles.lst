@@ -1,0 +1,5 @@
+com\alibaba\nacos\Nacos.class
+com\alibaba\nacos\console\controller\HealthController.class
+com\alibaba\nacos\console\model\Namespace.class
+com\alibaba\nacos\console\controller\NamespaceController.class
+com\alibaba\nacos\console\model\NamespaceAllInfo.class

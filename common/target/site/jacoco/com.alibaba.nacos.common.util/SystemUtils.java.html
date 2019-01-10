@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SystemUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-common 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.common.util</a> &gt; <span class="el_source">SystemUtils.java</span></div><h1>SystemUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.alibaba.nacos.common.util;
+
+import com.sun.management.OperatingSystemMXBean;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+
+import static org.apache.commons.lang3.CharEncoding.UTF_8;
+
+/**
+ * @author nacos
+ */
+<span class="nc" id="L41">public class SystemUtils {</span>
+
+<span class="fc" id="L43">    private static final Logger logger = LoggerFactory.getLogger(SystemUtils.class);</span>
+
+    /**
+     * The System property name of  Standalone mode
+     */
+    public static final String STANDALONE_MODE_PROPERTY_NAME = &quot;nacos.standalone&quot;;
+
+    /**
+     * The System property name of prefer hostname over ip
+     */
+    public static final String PREFER_HOSTNAME_OVER_IP_PROPERTY_NAME = &quot;nacos.preferHostnameOverIp&quot;;
+    /**
+     * Flag to say that, when guessing a hostname, the hostname of the server should be used in preference to the IP
+     * address reported by the OS.
+     */
+<span class="fc" id="L58">    public static final boolean PREFER_HOSTNAME_OVER_IP = Boolean.getBoolean(PREFER_HOSTNAME_OVER_IP_PROPERTY_NAME);</span>
+
+    /**
+     * Standalone mode or not
+     */
+<span class="fc" id="L63">    public static final boolean STANDALONE_MODE = Boolean.getBoolean(STANDALONE_MODE_PROPERTY_NAME);</span>
+
+    private static OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean)ManagementFactory
+<span class="fc" id="L66">        .getOperatingSystemMXBean();</span>
+
+<span class="fc" id="L68">    public static final String LOCAL_IP = getHostAddress();</span>
+
+    /**
+     * The key of nacos home.
+     */
+    public static final String NACOS_HOME_KEY = &quot;nacos.home&quot;;
+
+    /**
+     * The home of nacos.
+     */
+<span class="fc" id="L78">    public static final String NACOS_HOME = getNacosHome();</span>
+
+    /**
+     * The file path of cluster conf.
+     */
+<span class="fc" id="L83">    public static final String CLUSTER_CONF_FILE_PATH = getClusterConfFilePath();</span>
+
+    public static List&lt;String&gt; getIPsBySystemEnv(String key) {
+<span class="nc" id="L86">        String env = getSystemEnv(key);</span>
+<span class="nc" id="L87">        List&lt;String&gt; ips = new ArrayList&lt;String&gt;();</span>
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (StringUtils.isNotEmpty(env)) {</span>
+<span class="nc" id="L89">            ips = Arrays.asList(env.split(&quot;,&quot;));</span>
+        }
+<span class="nc" id="L91">        return ips;</span>
+    }
+
+    public static String getSystemEnv(String key) {
+<span class="nc" id="L95">        return System.getenv(key);</span>
+    }
+
+    public static float getLoad() {
+<span class="nc" id="L99">        return (float)operatingSystemMXBean.getSystemLoadAverage();</span>
+    }
+
+    public static float getCPU() {
+<span class="nc" id="L103">        return (float)operatingSystemMXBean.getSystemCpuLoad();</span>
+    }
+
+    public static float getMem() {
+<span class="nc" id="L107">        return (float)(1 - (double)operatingSystemMXBean.getFreePhysicalMemorySize() / (double)operatingSystemMXBean</span>
+<span class="nc" id="L108">            .getTotalPhysicalMemorySize());</span>
+    }
+
+    private static String getHostAddress() {
+<span class="fc" id="L112">        String address = System.getProperty(&quot;nacos.server.ip&quot;);</span>
+<span class="pc bpc" id="L113" title="1 of 2 branches missed.">        if (StringUtils.isNotEmpty(address)) {</span>
+<span class="nc" id="L114">            return address;</span>
+        }
+
+<span class="fc" id="L117">        address = &quot;127.0.0.1&quot;;</span>
+
+        try {
+<span class="fc" id="L120">            Enumeration&lt;NetworkInterface&gt; networkInterfaces = NetworkInterface.getNetworkInterfaces();</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">            while (networkInterfaces.hasMoreElements()) {</span>
+<span class="fc" id="L122">                NetworkInterface networkInterface = networkInterfaces.nextElement();</span>
+<span class="fc" id="L123">                Enumeration&lt;InetAddress&gt; inetAddresses = networkInterface.getInetAddresses();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">                while (inetAddresses.hasMoreElements()) {</span>
+<span class="fc" id="L125">                    InetAddress ip = inetAddresses.nextElement();</span>
+                    // 兼容不规范网段
+<span class="pc bpc" id="L127" title="1 of 4 branches missed.">                    if (!ip.isLoopbackAddress() &amp;&amp; !ip.getHostAddress().contains(&quot;:&quot;)) {</span>
+<span class="fc" id="L128">                        return ip.getHostAddress();</span>
+                    }
+<span class="fc" id="L130">                }</span>
+<span class="fc" id="L131">            }</span>
+<span class="nc" id="L132">        } catch (Exception e) {</span>
+<span class="nc" id="L133">            logger.error(&quot;get local host address error&quot;, e);</span>
+<span class="nc" id="L134">        }</span>
+
+<span class="nc" id="L136">        return address;</span>
+    }
+
+    private static String getNacosHome() {
+<span class="fc" id="L140">        String nacosHome = System.getProperty(NACOS_HOME_KEY);</span>
+<span class="pc bpc" id="L141" title="1 of 2 branches missed.">        if (StringUtils.isBlank(nacosHome)) {</span>
+<span class="fc" id="L142">            nacosHome = System.getProperty(&quot;user.home&quot;) + File.separator + &quot;nacos&quot;;</span>
+        }
+<span class="fc" id="L144">        return nacosHome;</span>
+    }
+
+    public static String getConfFilePath() {
+<span class="fc" id="L148">        return NACOS_HOME + File.separator + &quot;conf&quot; + File.separator;</span>
+    }
+
+    private static String getClusterConfFilePath() {
+<span class="fc" id="L152">        return NACOS_HOME + File.separator + &quot;conf&quot; + File.separator + &quot;cluster.conf&quot;;</span>
+    }
+
+    public static List&lt;String&gt; readClusterConf() throws IOException {
+<span class="fc" id="L156">        List&lt;String&gt; instanceList = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L157">        List&lt;String&gt; lines = IoUtils.readLines(</span>
+                new InputStreamReader(new FileInputStream(new File(CLUSTER_CONF_FILE_PATH)), UTF_8));
+<span class="fc" id="L159">        String comment = &quot;#&quot;;</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">        for (String line : lines) {</span>
+<span class="fc" id="L161">            String instance = line.trim();</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">            if (instance.startsWith(comment)) {</span>
+                // # it is ip
+<span class="fc" id="L164">                continue;</span>
+            }
+<span class="fc bfc" id="L166" title="All 2 branches covered.">            if (instance.contains(comment)) {</span>
+                // 192.168.71.52:8848 # Instance A
+<span class="fc" id="L168">                instance = instance.substring(0, instance.indexOf(comment));</span>
+<span class="fc" id="L169">                instance = instance.trim();</span>
+            }
+<span class="fc" id="L171">            instanceList.add(instance);</span>
+<span class="fc" id="L172">        }</span>
+<span class="fc" id="L173">        return instanceList;</span>
+    }
+
+    public static void writeClusterConf(String content) throws IOException {
+<span class="fc" id="L177">        IoUtils.writeStringToFile(new File(CLUSTER_CONF_FILE_PATH), content, UTF_8);</span>
+<span class="fc" id="L178">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

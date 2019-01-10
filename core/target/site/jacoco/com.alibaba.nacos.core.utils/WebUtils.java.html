@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>WebUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-core 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.core.utils</a> &gt; <span class="el_source">WebUtils.java</span></div><h1>WebUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.core.utils;
+
+import org.apache.commons.lang3.StringUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+
+/**
+ * @author &lt;a href=&quot;mailto:zpf.073@gmail.com&quot;&gt;nkorange&lt;/a&gt;
+ */
+<span class="nc" id="L26">public class WebUtils {</span>
+
+    public static String required(HttpServletRequest req, String key) {
+<span class="nc" id="L29">        String value = req.getParameter(key);</span>
+<span class="nc bnc" id="L30" title="All 2 branches missed.">        if (StringUtils.isEmpty(value)) {</span>
+<span class="nc" id="L31">            throw new IllegalArgumentException(&quot;Param '&quot; + key + &quot;' is required.&quot;);</span>
+        }
+
+<span class="nc" id="L34">        String encoding = req.getParameter(&quot;encoding&quot;);</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">        if (!StringUtils.isEmpty(encoding)) {</span>
+            try {
+<span class="nc" id="L37">                value = new String(value.getBytes(&quot;UTF-8&quot;), encoding);</span>
+<span class="nc" id="L38">            } catch (UnsupportedEncodingException ignore) {</span>
+<span class="nc" id="L39">            }</span>
+        }
+
+<span class="nc" id="L42">        return value.trim();</span>
+    }
+
+    public static String optional(HttpServletRequest req, String key, String defaultValue) {
+
+<span class="nc bnc" id="L47" title="All 4 branches missed.">        if (!req.getParameterMap().containsKey(key) || req.getParameterMap().get(key)[0] == null) {</span>
+<span class="nc" id="L48">            return defaultValue;</span>
+        }
+
+<span class="nc" id="L51">        String value = req.getParameter(key);</span>
+
+<span class="nc" id="L53">        String encoding = req.getParameter(&quot;encoding&quot;);</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (!StringUtils.isEmpty(encoding)) {</span>
+            try {
+<span class="nc" id="L56">                value = new String(value.getBytes(&quot;UTF-8&quot;), encoding);</span>
+<span class="nc" id="L57">            } catch (UnsupportedEncodingException ignore) {</span>
+<span class="nc" id="L58">            }</span>
+        }
+
+<span class="nc" id="L61">        return value.trim();</span>
+    }
+
+    public static String getAcceptEncoding(HttpServletRequest req) {
+<span class="nc" id="L65">        String encode = StringUtils.defaultIfEmpty(req.getHeader(&quot;Accept-Charset&quot;), &quot;UTF-8&quot;);</span>
+<span class="nc bnc" id="L66" title="All 2 branches missed.">        encode = encode.contains(&quot;,&quot;) ? encode.substring(0, encode.indexOf(&quot;,&quot;)) : encode;</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        return encode.contains(&quot;;&quot;) ? encode.substring(0, encode.indexOf(&quot;;&quot;)) : encode;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

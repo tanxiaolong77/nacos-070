@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Instance.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-api 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.api.naming.pojo</a> &gt; <span class="el_source">Instance.java</span></div><h1>Instance.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.api.naming.pojo;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author &lt;a href=&quot;mailto:zpf.073@gmail.com&quot;&gt;nkorange&lt;/a&gt;
+ */
+<span class="nc" id="L27">public class Instance {</span>
+
+    /**
+     * Unique ID of this instance.
+     */
+    private String instanceId;
+
+    /**
+     * Instance ip
+     */
+    private String ip;
+
+    /**
+     * Instance port
+     */
+    private int port;
+
+    /**
+     * Instance weight
+     */
+<span class="nc" id="L47">    private double weight = 1.0D;</span>
+
+    /**
+     * Instance health status
+     */
+<span class="nc" id="L52">    @JSONField(name = &quot;valid&quot;)</span>
+    private boolean healthy = true;
+
+<span class="nc" id="L55">    private boolean enabled = true;</span>
+
+    /**
+     * Cluster information of instance
+     */
+    private String clusterName;
+
+    /**
+     * Service name of instance
+     */
+    private String serviceName;
+
+    /**
+     * User extended attributes
+     */
+<span class="nc" id="L70">    private Map&lt;String, String&gt; metadata = new HashMap&lt;String, String&gt;();</span>
+
+    public String getInstanceId() {
+<span class="nc" id="L73">        return instanceId;</span>
+    }
+
+    public void setInstanceId(String instanceId) {
+<span class="nc" id="L77">        this.instanceId = instanceId;</span>
+<span class="nc" id="L78">    }</span>
+
+    public String getIp() {
+<span class="nc" id="L81">        return ip;</span>
+    }
+
+    public void setIp(String ip) {
+<span class="nc" id="L85">        this.ip = ip;</span>
+<span class="nc" id="L86">    }</span>
+
+    public int getPort() {
+<span class="nc" id="L89">        return port;</span>
+    }
+
+    public void setPort(int port) {
+<span class="nc" id="L93">        this.port = port;</span>
+<span class="nc" id="L94">    }</span>
+
+    public double getWeight() {
+<span class="nc" id="L97">        return weight;</span>
+    }
+
+    public void setWeight(double weight) {
+<span class="nc" id="L101">        this.weight = weight;</span>
+<span class="nc" id="L102">    }</span>
+
+    public boolean isHealthy() {
+<span class="nc" id="L105">        return healthy;</span>
+    }
+
+    public void setHealthy(boolean healthy) {
+<span class="nc" id="L109">        this.healthy = healthy;</span>
+<span class="nc" id="L110">    }</span>
+
+    public String getClusterName() {
+<span class="nc" id="L113">        return clusterName;</span>
+    }
+
+    public void setClusterName(String clusterName) {
+<span class="nc" id="L117">        this.clusterName = clusterName;</span>
+<span class="nc" id="L118">    }</span>
+
+    public String getServiceName() {
+<span class="nc" id="L121">        return serviceName;</span>
+    }
+
+    public void setServiceName(String serviceName) {
+<span class="nc" id="L125">        this.serviceName = serviceName;</span>
+<span class="nc" id="L126">    }</span>
+
+    public Map&lt;String, String&gt; getMetadata() {
+<span class="nc" id="L129">        return metadata;</span>
+    }
+
+    public void setMetadata(Map&lt;String, String&gt; metadata) {
+<span class="nc" id="L133">        this.metadata = metadata;</span>
+<span class="nc" id="L134">    }</span>
+
+    public void addMetadata(String key, String value) {
+<span class="nc" id="L137">        this.metadata.put(key, value);</span>
+<span class="nc" id="L138">    }</span>
+
+    public boolean isEnabled() {
+<span class="nc" id="L141">        return enabled;</span>
+    }
+
+    public void setEnabled(boolean enabled) {
+<span class="nc" id="L145">        this.enabled = enabled;</span>
+<span class="nc" id="L146">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L150">        return JSON.toJSONString(this);</span>
+    }
+
+    public String toInetAddr() {
+<span class="nc" id="L154">        return ip + &quot;:&quot; + port;</span>
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        if (!(obj instanceof Instance)) {</span>
+<span class="nc" id="L160">            return false;</span>
+        }
+
+<span class="nc" id="L163">        Instance host = (Instance)obj;</span>
+
+<span class="nc" id="L165">        return strEquals(toString(), host.toString());</span>
+    }
+
+    @Override
+    public int hashCode() {
+<span class="nc" id="L170">        return toString().hashCode();</span>
+    }
+
+    private static boolean strEquals(String str1, String str2) {
+<span class="nc bnc" id="L174" title="All 4 branches missed.">        return str1 == null ? str2 == null : str1.equals(str2);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

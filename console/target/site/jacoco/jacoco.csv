@@ -1,0 +1,6 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+nacos-console 0.7.0,com.alibaba.nacos,Nacos,8,0,0,0,3,0,2,0,2,0
+nacos-console 0.7.0,com.alibaba.nacos.console.model,Namespace,65,0,0,0,28,0,13,0,13,0
+nacos-console 0.7.0,com.alibaba.nacos.console.model,NamespaceAllInfo,21,0,0,0,8,0,4,0,4,0
+nacos-console 0.7.0,com.alibaba.nacos.console.controller,NamespaceController,149,0,4,0,31,0,8,0,6,0
+nacos-console 0.7.0,com.alibaba.nacos.console.controller,HealthController,0,81,0,10,0,25,0,11,0,6

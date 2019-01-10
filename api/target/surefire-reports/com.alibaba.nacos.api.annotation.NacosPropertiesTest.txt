@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.alibaba.nacos.api.annotation.NacosPropertiesTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.167 s - in com.alibaba.nacos.api.annotation.NacosPropertiesTest

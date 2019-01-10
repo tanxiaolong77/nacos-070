@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StandaloneProfileApplicationListener.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-core 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.core.listener</a> &gt; <span class="el_source">StandaloneProfileApplicationListener.java</span></div><h1>StandaloneProfileApplicationListener.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.core.listener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.PriorityOrdered;
+import org.springframework.core.env.ConfigurableEnvironment;
+
+import java.util.Arrays;
+
+import static com.alibaba.nacos.common.util.Constants.STANDALONE_SPRING_PROFILE;
+import static com.alibaba.nacos.common.util.SystemUtils.STANDALONE_MODE;
+import static com.alibaba.nacos.common.util.SystemUtils.STANDALONE_MODE_PROPERTY_NAME;
+
+/**
+ * Standalone {@link Profile} {@link ApplicationListener} for {@link ApplicationEnvironmentPreparedEvent}
+ *
+ * @author &lt;a href=&quot;mailto:mercyblitz@gmail.com&quot;&gt;Mercy&lt;/a&gt;
+ * @see ConfigurableEnvironment#addActiveProfile(String)
+ * @since 0.2.2
+ */
+<span class="fc" id="L39">public class StandaloneProfileApplicationListener implements ApplicationListener&lt;ApplicationEnvironmentPreparedEvent&gt;,</span>
+    PriorityOrdered {
+
+<span class="fc" id="L42">    private static final Logger logger = LoggerFactory.getLogger(StandaloneProfileApplicationListener.class);</span>
+
+    @Override
+    public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
+
+<span class="fc" id="L47">        ConfigurableEnvironment environment = event.getEnvironment();</span>
+
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (environment.getProperty(STANDALONE_MODE_PROPERTY_NAME, boolean.class, false)) {</span>
+<span class="fc" id="L50">            environment.addActiveProfile(STANDALONE_SPRING_PROFILE);</span>
+        }
+
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        if (logger.isInfoEnabled()) {</span>
+<span class="fc" id="L54">            logger.info(&quot;Spring Environment's active profiles : {} in standalone mode : {}&quot;,</span>
+<span class="fc" id="L55">                Arrays.asList(environment.getActiveProfiles()),</span>
+<span class="fc" id="L56">                STANDALONE_MODE</span>
+            );
+        }
+
+<span class="fc" id="L60">    }</span>
+
+    @Override
+    public int getOrder() {
+<span class="nc" id="L64">        return HIGHEST_PRECEDENCE;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

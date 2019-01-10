@@ -1,0 +1,10 @@
+com\alibaba\nacos\naming\misc\SwitchTest.class
+com\alibaba\nacos\naming\misc\UtilsAndCommonsTest.class
+com\alibaba\nacos\naming\controllers\InstanceControllerTest.class
+com\alibaba\nacos\naming\core\IpAddressTest.class
+com\alibaba\nacos\naming\core\ClusterTest.class
+com\alibaba\nacos\naming\raft\RaftStoreTest.class
+com\alibaba\nacos\naming\core\DomainsManagerTest.class
+com\alibaba\nacos\naming\web\APICommandsTest.class
+com\alibaba\nacos\naming\BaseTest.class
+com\alibaba\nacos\naming\core\DomainTest.class

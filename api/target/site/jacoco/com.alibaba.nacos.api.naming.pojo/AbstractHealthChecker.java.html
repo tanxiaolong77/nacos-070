@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractHealthChecker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">nacos-api 0.7.0</a> &gt; <a href="index.source.html" class="el_package">com.alibaba.nacos.api.naming.pojo</a> &gt; <span class="el_source">AbstractHealthChecker.java</span></div><h1>AbstractHealthChecker.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 1999-2018 Alibaba Group Holding Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an &quot;AS IS&quot; BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.alibaba.nacos.api.naming.pojo;
+
+import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.nacos.api.common.Constants;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+/**
+ * @author &lt;a href=&quot;mailto:zpf.073@gmail.com&quot;&gt;nkorange&lt;/a&gt;
+ */
+<span class="nc" id="L30">public abstract class AbstractHealthChecker implements Cloneable {</span>
+
+<span class="nc" id="L32">    protected String type = &quot;unknown&quot;;</span>
+
+    public String getType() {
+<span class="nc" id="L35">        return type;</span>
+    }
+
+    public void setType(String type) {
+<span class="nc" id="L39">        this.type = type;</span>
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * Clone all fields of this instance to another one
+     *
+     * @return Another instance with exactly the same fields.
+     * @throws CloneNotSupportedException
+     */
+    public abstract AbstractHealthChecker clone() throws CloneNotSupportedException;
+
+    public static class Http extends AbstractHealthChecker {
+        public static final String TYPE = &quot;HTTP&quot;;
+
+<span class="nc" id="L53">        private String path = &quot;&quot;;</span>
+<span class="nc" id="L54">        private String headers = &quot;&quot;;</span>
+
+<span class="nc" id="L56">        private int expectedResponseCode = 200;</span>
+
+<span class="nc" id="L58">        public Http() {</span>
+<span class="nc" id="L59">            this.type = TYPE;</span>
+<span class="nc" id="L60">        }</span>
+
+        public int getExpectedResponseCode() {
+<span class="nc" id="L63">            return expectedResponseCode;</span>
+        }
+
+        public void setExpectedResponseCode(int expectedResponseCode) {
+<span class="nc" id="L67">            this.expectedResponseCode = expectedResponseCode;</span>
+<span class="nc" id="L68">        }</span>
+
+        public String getPath() {
+<span class="nc" id="L71">            return path;</span>
+        }
+
+        public void setPath(String path) {
+<span class="nc" id="L75">            this.path = path;</span>
+<span class="nc" id="L76">        }</span>
+
+        public String getHeaders() {
+<span class="nc" id="L79">            return headers;</span>
+        }
+
+        public void setHeaders(String headers) {
+<span class="nc" id="L83">            this.headers = headers;</span>
+<span class="nc" id="L84">        }</span>
+
+        @JSONField(serialize = false)
+        public Map&lt;String, String&gt; getCustomHeaders() {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">            if (StringUtils.isBlank(headers)) {</span>
+<span class="nc" id="L89">                return Collections.emptyMap();</span>
+            }
+
+<span class="nc" id="L92">            Map&lt;String, String&gt; headerMap = new HashMap&lt;String, String&gt;(16);</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            for (String s : headers.split(Constants.NAMING_HTTP_HEADER_SPILIER)) {</span>
+<span class="nc" id="L94">                String[] splits = s.split(&quot;:&quot;);</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">                if (splits.length != 2) {</span>
+<span class="nc" id="L96">                    continue;</span>
+                }
+
+<span class="nc" id="L99">                headerMap.put(StringUtils.trim(splits[0]), StringUtils.trim(splits[1]));</span>
+            }
+
+<span class="nc" id="L102">            return headerMap;</span>
+        }
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L107">            return Objects.hash(path, headers, expectedResponseCode);</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            if (!(obj instanceof Http)) {</span>
+<span class="nc" id="L113">                return false;</span>
+            }
+
+<span class="nc" id="L116">            Http other = (Http)obj;</span>
+
+<span class="nc bnc" id="L118" title="All 2 branches missed.">            if (!strEquals(type, other.getType())) {</span>
+<span class="nc" id="L119">                return false;</span>
+            }
+
+<span class="nc bnc" id="L122" title="All 2 branches missed.">            if (!strEquals(path, other.getPath())) {</span>
+<span class="nc" id="L123">                return false;</span>
+            }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">            if (!strEquals(headers, other.getHeaders())) {</span>
+<span class="nc" id="L126">                return false;</span>
+            }
+<span class="nc bnc" id="L128" title="All 2 branches missed.">            return expectedResponseCode == other.getExpectedResponseCode();</span>
+        }
+
+        @Override
+        public Http clone() throws CloneNotSupportedException {
+<span class="nc" id="L133">            Http config = new Http();</span>
+
+<span class="nc" id="L135">            config.setPath(this.getPath());</span>
+<span class="nc" id="L136">            config.setHeaders(this.getHeaders());</span>
+<span class="nc" id="L137">            config.setType(this.getType());</span>
+<span class="nc" id="L138">            config.setExpectedResponseCode(this.getExpectedResponseCode());</span>
+
+<span class="nc" id="L140">            return config;</span>
+        }
+    }
+
+    public static class Tcp extends AbstractHealthChecker {
+        public static final String TYPE = &quot;TCP&quot;;
+
+<span class="nc" id="L147">        public Tcp() {</span>
+<span class="nc" id="L148">            this.type = TYPE;</span>
+<span class="nc" id="L149">        }</span>
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L153">            return Objects.hash(TYPE);</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc" id="L158">            return obj instanceof Tcp;</span>
+
+        }
+
+        public Tcp clone() throws CloneNotSupportedException {
+<span class="nc" id="L163">            Tcp config = new Tcp();</span>
+<span class="nc" id="L164">            config.setType(this.type);</span>
+<span class="nc" id="L165">            return config;</span>
+        }
+    }
+
+    public static class Mysql extends AbstractHealthChecker {
+        public static final String TYPE = &quot;MYSQL&quot;;
+
+        private String user;
+        private String pwd;
+        private String cmd;
+
+<span class="nc" id="L176">        public Mysql() {</span>
+<span class="nc" id="L177">            this.type = TYPE;</span>
+<span class="nc" id="L178">        }</span>
+
+        public String getCmd() {
+<span class="nc" id="L181">            return cmd;</span>
+        }
+
+        public String getPwd() {
+<span class="nc" id="L185">            return pwd;</span>
+        }
+
+        public String getUser() {
+<span class="nc" id="L189">            return user;</span>
+        }
+
+        public void setUser(String user) {
+<span class="nc" id="L193">            this.user = user;</span>
+<span class="nc" id="L194">        }</span>
+
+        public void setCmd(String cmd) {
+<span class="nc" id="L197">            this.cmd = cmd;</span>
+<span class="nc" id="L198">        }</span>
+
+        public void setPwd(String pwd) {
+<span class="nc" id="L201">            this.pwd = pwd;</span>
+<span class="nc" id="L202">        }</span>
+
+        @Override
+        public int hashCode() {
+<span class="nc" id="L206">            return Objects.hash(user, pwd, cmd);</span>
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+<span class="nc bnc" id="L211" title="All 2 branches missed.">            if (!(obj instanceof Mysql)) {</span>
+<span class="nc" id="L212">                return false;</span>
+            }
+
+<span class="nc" id="L215">            Mysql other = (Mysql)obj;</span>
+
+<span class="nc bnc" id="L217" title="All 2 branches missed.">            if (!strEquals(user, other.getUser())) {</span>
+<span class="nc" id="L218">                return false;</span>
+            }
+
+<span class="nc bnc" id="L221" title="All 2 branches missed.">            if (!strEquals(pwd, other.getPwd())) {</span>
+<span class="nc" id="L222">                return false;</span>
+            }
+
+<span class="nc" id="L225">            return strEquals(cmd, other.getCmd());</span>
+
+        }
+
+        @Override
+        public Mysql clone() throws CloneNotSupportedException {
+<span class="nc" id="L231">            Mysql config = new Mysql();</span>
+<span class="nc" id="L232">            config.setUser(this.getUser());</span>
+<span class="nc" id="L233">            config.setPwd(this.getPwd());</span>
+<span class="nc" id="L234">            config.setCmd(this.getCmd());</span>
+<span class="nc" id="L235">            config.setType(this.getType());</span>
+
+<span class="nc" id="L237">            return config;</span>
+        }
+    }
+
+    private static boolean strEquals(String str1, String str2) {
+<span class="nc bnc" id="L242" title="All 4 branches missed.">        return str1 == null ? str2 == null : str1.equals(str2);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
